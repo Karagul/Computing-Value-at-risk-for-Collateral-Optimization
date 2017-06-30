@@ -1,8 +1,5 @@
 import statistics as st
 from scipy.stats import norm
-import statistics as st
-
-from scipy.stats import norm
 
 
 # Calculates the most recent VaR value of a single asset.
