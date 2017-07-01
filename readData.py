@@ -1,7 +1,7 @@
 import quandl
 import numpy as np
 import pandas as pd
-from pandas.tseries.offsets import BDay # BDay is business day, not birthday...
+from pandas.tseries.offsets import BDay # BDay is business day
 
 # Allows more than 50 data requests per day from Quandl
 quandl.ApiConfig.api_key = ""

@@ -1,6 +1,6 @@
 import statistics as st
 from scipy.stats import norm
-
+import numpy as np
 
 # Calculates the most recent VaR value of a single asset.
 def dailySingleParametricVar(retdata, confidence, windowsize):
@@ -34,6 +34,30 @@ def dailyMultiParametricVar(retdata, confidence, windowsize):
         singleVaR = -norm.ppf(1-confidence/100, mean, sd) # Inv norm distribution of specified percentile, multiplied by -1
         VarList.append(singleVaR)
     return VarList
+
+# Calculates and returns the variance-covariance matrix of a cleaned dataset of returns
+def varCovarMatrix(cleandata):
+    matrix = np.cov(cleandata, rowvar=False)
+    return  matrix
+
+# Calculates and returns the correlation matrix of a cleaned dataset of returns.
+def correlationMatrix(cleandata):
+    cov = varCovarMatrix(cleandata)
+    # Iterate over the data and multiply all of the standard deviations (totalstd)
+    totalstd = 1
+    for asset in cleandata:
+        assetstd = st.pstdev(cleandata[asset])
+        totalstd = totalstd * assetstd
+    correlation = cov/totalstd
+    return correlation
+
+
+
+
+
+
+
+
 
 
 
