@@ -15,7 +15,7 @@ def readQuandl(derivativelist, lookback):
 
 # Zero's are assumed to be missing values, and are replaced with NaN.
 # Missing data is filled in using linear interpolation for all columns.
-# NaN at the start and end of a column are replaced with ~ 0 (FUTURE: CHANGE LINEAR INTERPOLATION?)
+# NaN at the start and end of a column are replaced with ~ 0 TODO: Change to random interpolation with same variance?
 def cleanData(mydata):
     mydata2 = mydata.replace(0, np.NaN)
     if mydata2.isnull().values.any():
@@ -49,4 +49,8 @@ def tick2ret(series):
     retdata['Returns'] = retlist
     return retdata
 
+# Obtains portfolio weights as an input from the user. TODO: Add in exceptions for incorrect entries
+def portfolioWeights():
+    weights = [float(x) for x in input("Enter a list of weights which sum to 1, separated by spaces: ").split()]
+    return weights
 

@@ -7,5 +7,6 @@ y = readData.cleanData(x)
 # varPanda = parametricVar.dailyMultiParametricVar(y, 99, 20)
 # print(varPanda)
 
-z = parametricVar.correlationMatrix(y)
-print(z)
+w = readData.portfolioWeights()
+parametricVar.paraPortfolioVaR(y, w, 99, 1)
+parametricVar.paraPortfolioVaR(y, w, 99, 2)
