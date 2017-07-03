@@ -6,7 +6,7 @@ import numpy as np
 def singleParametricVaR(retdata, confidence, windowsize, T):
     window = retdata['Returns'][-windowsize:]
     mean = st.mean(window)
-    z = norm.ppf(1 - confidence / 100)  # Inv standard normal distribution of specified percentile
+    z = norm.ppf(1 - confidence / 100)        # Inv standard normal distribution of specified percentile
     sd = st.pstdev(window)
     singleVaR = abs(mean*T - z*sd*np.sqrt(T)) # Inv norm distribution of specified percentile, multiplied by -1
     return singleVaR
