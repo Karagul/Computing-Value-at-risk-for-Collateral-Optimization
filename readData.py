@@ -1,10 +1,13 @@
+# Last Updated: 05/07. This module contains functions whjch allow the use to enter a portfolio and to preprocess
+# time series data.
+
 import quandl
 import numpy as np
 import pandas as pd
 from pandas.tseries.offsets import BDay # BDay is business day
 
 # Allows more than 50 data requests per day from Quandl
-quandl.ApiConfig.api_key = ""
+quandl.ApiConfig.api_key = "TZx_1_QK__fhqDLqfp8K"
 
 # Reads time series and obtains daily returns if desired for specified derivatives on Quandl
 def readQuandl(derivativelist, lookback, returns):

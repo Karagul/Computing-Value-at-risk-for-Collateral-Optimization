@@ -1,3 +1,6 @@
+# Last Updated: 05/07. This module contains functions whjch calculate the Parametric VaR for both single assets
+# and for multi asset portfolios.
+
 import statistics as st
 from scipy.stats import norm
 import numpy as np
