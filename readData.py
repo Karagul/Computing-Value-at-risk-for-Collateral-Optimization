@@ -7,7 +7,7 @@ import pandas as pd
 from pandas.tseries.offsets import BDay # BDay is business day
 
 # Allows more than 50 data requests per day from Quandl
-quandl.ApiConfig.api_key = "TZx_1_QK__fhqDLqfp8K"
+quandl.ApiConfig.api_key = ""
 
 # Reads time series and obtains daily returns if desired for specified derivatives on Quandl
 def readQuandl(derivativelist, lookback, returns):
