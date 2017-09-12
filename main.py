@@ -1,29 +1,25 @@
-import readData
-import parametricVar
-import historicalVaR
+# SCRIPT 7: This script optimizes the overall CVaR of a portfolio across several exchanges. It requires the wikifutures.csv
+# metadata.
+
 import monteCarloVaR
+import optimization
 import numpy as np
+from numpy import genfromtxt
+import pandas as pd
+import plotData
+import matplotlib.pyplot as plt
+import time
+import readData
 
-x = readData.alternativeHistReturns(["CHRIS/ICE_B17.1", "CHRIS/ICE_B1.1"], 200, 5)
-#x = readData.alternativeHistReturns("CHRIS/ICE_B17.1", 200, 2)
-weights = [0.7, 0.3]
-mu = np.mean(x)
-print(mu)
-cov = parametricVar.varCovarMatrix(x)
-print(cov)
-test = monteCarloVaR.pythonNormRand(mu, cov, 1000)
+p = readData.readQuandl(["CHRIS/ICE_M1.1", "CHRIS/CME_W1.1"], 1000, True )
+q = readData.cleanData(p)
 
-list1 = []
-list2 = []
-for pair in test:
-    list1.append(pair[0])
-    list2.append(pair[1])
-print("For list 1: ")
-print(np.var(list1))
-print(np.mean(list1))
+x = time.clock()
 
-print("For list 2: ")
-print(np.var(list2))
-print(np.mean(list2))
+optimization.exchangeOptimize(q, ["CHRIS/ICE_M1","CHRIS/CME_W1"], [0.1, 0.9],
+                              "CHRIS/CME_W1", "Historical", 1, 1000)
 
-print(np.cov(list1, list2))
+y = time.clock()
+
+print("Optimization time is " + str(y-x))
+

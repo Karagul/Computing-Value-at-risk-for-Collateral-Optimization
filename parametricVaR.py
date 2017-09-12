@@ -6,13 +6,25 @@ from scipy.stats import norm
 import numpy as np
 
 # Calculates the most recent VaR value of a single asset, for T days into the future.
-def singleParametricVaR(retdata, confidence, windowsize, T):
-    window = retdata['Returns'][-windowsize:]
-    mean = st.mean(window)
+def singleParametricVaR(retdata, confidence, T):
+    npdata = np.asarray(retdata)
+    mean = np.mean(npdata)
     z = norm.ppf(1 - confidence / 100)        # Inv standard normal distribution of specified percentile
-    sd = st.pstdev(window)
+    sd = np.sqrt(np.var(npdata))
     singleVaR = abs(mean*T - z*sd*np.sqrt(T)) # Inv norm distribution of specified percentile, multiplied by -1
     return singleVaR
+
+# Calculates the most recent CVaR value of a single asset, for T days into the future.
+def singleParametricCVaR(retdata, confidence, T):
+    npdata = np.asarray(retdata)
+    mean = np.mean(npdata)
+    z = norm.ppf(1 - confidence / 100)        # Inv standard normal distribution of specified percentile
+    sd = np.sqrt(np.var(npdata))
+    signedVaR = mean*T - z*sd*np.sqrt(T)
+    if signedVaR > 0:
+        CVaR = abs(mean*T - (sd*np.sqrt(T)*norm.pdf(norm.ppf(1-confidence/100)))/(1-confidence/100))
+    else: CVaR = 0
+    return CVaR
 
 # Calculates multiple VaR values (ie for different dates) of a single asset.
 def oldSingleParametricVaR(retdata, confidence, windowsize, T):
@@ -30,7 +42,7 @@ def oldSingleParametricVaR(retdata, confidence, windowsize, T):
     return retdata
 
 # Calculates a list of VaR values for each asset. Note that this is not for a portfolio.
-def dailyMultiParametricVar(retdata, confidence, windowsize, T):
+def dailyMultiParametricVaR(retdata, confidence, windowsize, T):
     VarList = []
     for asset in retdata:
         window = retdata[asset][-windowsize:]
@@ -70,11 +82,24 @@ def portfolioMean(cleandata, weights):
 def paraPortfolioVaR(cleandata, weights, confidence, T):
     mean = portfolioMean(cleandata, weights)
     variance = portfolioVariance(cleandata, weights)
-    z = norm.ppf(1-confidence/100)                      # Inv standard normal distribution of specified percentile
-    VaR = abs(mean*T - z*np.sqrt(variance)*np.sqrt(T))  # Want the absolute value not a negative one
+    z = norm.ppf(1-confidence/100)                          # Inv standard normal distribution of specified percentile
+    signedVaR = mean*T - z*np.sqrt(variance)*np.sqrt(T)
+    if signedVaR > 0:
+        VaR = abs(signedVaR)                                # Want the absolute value not a negative one
+    else: VaR = 0
     return VaR
 
-
+# Calculates the conditional value-at-risk (CVaR) for a portfolio given a set of clean asset data, confidence level,
+# portfolio weights, and a period of validity for the VaR figure T (days)
+def paraPortfolioCVaR(cleandata, weights, confidence, T):
+    mean = portfolioMean(cleandata, weights)
+    variance = portfolioVariance(cleandata, weights)
+    z = norm.ppf(1-confidence/100)                      # Inv standard normal distribution of specified percentile
+    signedVaR = mean*T - z*np.sqrt(variance)*np.sqrt(T)
+    if signedVaR > 0:
+        CVaR = abs(mean*T - (np.sqrt(variance)*np.sqrt(T)*norm.pdf(norm.ppf(1-confidence/100)))/(1-confidence/100))
+    else: CVaR = 0
+    return CVaR
 
 
 
