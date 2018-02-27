@@ -6,11 +6,11 @@ import parametricVaR
 import readData
 import pandas as pd
 
-# This function calculates the minimum portfolio of a set of portfolios, each with their own VaR calculation technique.
-# The lookback period is determined by the data itself. The index of each input corresponds to each portfolio.
-# Historical Simulations do not require T (period of validity), therefore a 0 is put for their index in TVector.
-# If the portfolio is not to be analysed using Monte Carlo repVector[portfolio] = 0
 def multiVaRMinimum(portfolios, weightsVector, varTechniqueVector, confidenceintervalVector, TVector, repVector):
+    """This function calculates the minimum portfolio of a set of portfolios, each with their own VaR calculation
+    technique. The lookback period is determined by the data itself. The index of each input corresponds to each
+    portfolio. Historical Simulations do not require T (period of validity), therefore a 0 is put for their index in
+    TVector. If the portfolio is not to be analysed using Monte Carlo repVector[portfolio] = 0 """
     vaRList = []
     for index in range(len(portfolios)):
         if varTechniqueVector[index] == "Parametric":
@@ -32,12 +32,12 @@ def multiVaRMinimum(portfolios, weightsVector, varTechniqueVector, confidenceint
     print("Min VaR value is: ")
     print(vaRList[minIndex])
 
-# For a specified derivative, this function searches the WikiFutures list to see if it is listed on another exchange
-# which is already being traded on in the portfolio. If it is, then the CVaR of the original portfolio is calculated
-# and added, and the CVaR of the new portfolio (where the asset is switched) is calculated and added.
-# If the new CVaR is lower, the function returns the exchange with which the new asset is allocated to.
-def exchangeOptimize(portfolio, assetCodes, weightsVector, selectedAsset, varTechnique, T, reps):
 
+def exchangeOptimize(portfolio, assetCodes, weightsVector, selectedAsset, varTechnique, T, reps):
+    """For a specified derivative, this function searches the WikiFutures list to see if it is listed on another exchange
+    which is already being traded on in the portfolio. If it is, then the CVaR of the original portfolio is calculated
+    and added, and the CVaR of the new portfolio (where the asset is switched) is calculated and added.
+    If the new CVaR is lower, the function returns the exchange with which the new asset is allocated to."""
     df = readData.readWikiFutures("wikifutures.csv")
 
     # Get a list of exchanges in portfolio. Construct a dictionary of assets and weights for each exchange
@@ -62,7 +62,8 @@ def exchangeOptimize(portfolio, assetCodes, weightsVector, selectedAsset, varTec
     exchangesPortfoliosDict = {}
     for exchange in exchangeList:
         exchangePortfolio1 = portfolio.drop(portfolio.columns[exchangeIndex[exchange]],axis=1)
-        exchangePortfolio2 = exchangePortfolio1.tail(df.loc[df['Quandl Code'] == exchangeAssetDict[exchange][0], 'Lookback'].item()) # Cut down to lookback
+        exchangePortfolio2 = exchangePortfolio1.tail(df.loc[df['Quandl Code'] == exchangeAssetDict[exchange][0],
+                                                            'Lookback'].item()) # Cut down to lookback
         exchangesPortfoliosDict[exchange] = exchangePortfolio2.copy(deep = True)
 
         exchangeWeights = exchangeWeightDict[exchange]
@@ -169,11 +170,11 @@ def exchangeOptimize(portfolio, assetCodes, weightsVector, selectedAsset, varTec
         print("CVaR can be minimized by switching with asset " + newCode + ". New CVaR is " + str(newCVaRTotal) +".")
 
 
-# Out of a list of alternative assets for a selected asset, this function is able to suggest an alternative asset for
-# which the overall portfolio VaR is minimized. For maximum realism, the portfolio must be at a single exchange,
-# as all VaR is calculated used the same method, lookback, and confidence.
 def optimizeSimilarAssets(portfolio, assetCodes, weightsVector, selectedAsset,
                           alternativeAssets, varTechnique, T, reps, confidence):
+    """ Out of a list of alternative assets for a selected asset, this function is able to suggest an alternative asset for
+    which the overall portfolio VaR is minimized. For maximum realism, the portfolio must be at a single exchange,
+    as all VaR is calculated used the same method, lookback, and confidence."""
 
     # Calculate the current VaR
 
