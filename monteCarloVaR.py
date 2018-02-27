@@ -9,37 +9,38 @@ import time
 from numpy import genfromtxt
 import readData
 
-# Calculates the lower triangular Cholesky matrix (L) of the variance-covariance matrix (E) such that LL^T = E
 def choleskyMatrix(covarmatrix):
+    """Calculates the lower triangular Cholesky matrix (L) of the variance-covariance matrix (E) such that LL^T = E"""
     matrix = scipy.linalg.cholesky(covarmatrix,lower=True)
     return matrix
 
-# Python's built in random number generator which builds normally distributed random sequences using the Mersenne
-# Twister algorithm. Inputs are a vector of mean values for each risk factor, their covariance matrix, and a specified
-# number of repetitions. Returns a numpy array of (n x repetitions), where n is the number of risk factors
 def multiNormRand(muvector, cov, repetitions):
+    """Python's built in random number generator which builds normally distributed random sequences using the Mersenne
+    Twister algorithm. Inputs are a vector of mean values for each risk factor, their covariance matrix, and a specified
+    number of repetitions. Returns a numpy array of (n x repetitions), where n is the number of risk factors """
     randarray = np.random.multivariate_normal(muvector, cov, repetitions)
     return randarray
 
-# Python's built in random number generator for calculations involving single asset portfolios.
 def singleNormRand(mu, var, repetitions):
-   # randarray = np.random.normal(mu, np.sqrt(var),repetitions)
+    """Python's built in random number generator for calculations involving single asset portfolios. """
+    # randarray = np.random.normal(mu, np.sqrt(var),repetitions)
     randarray = np.random.normal(0, 1, repetitions)
     return randarray
 
-# This function is the Geometric Brownian Motion Calculator for a single risk factor at time (t(i+1)).
-# initialvalue is the value of the risk factor at the current timestep t(i). timestep = t(i+1) - t(i)
 def gbm(mu, random, var, timestep):
+    """ This function is the Geometric Brownian Motion Calculator for a single risk factor at time (t(i+1)).
+    initialvalue is the value of the risk factor at the current timestep t(i). timestep = t(i+1) - t(i)"""
     nu = mu - var/2
     #newvalue = previousvalue*np.exp(nu*timestep + np.sqrt(var*timestep)*random)
     newvalue = mu * timestep +  np.sqrt(var*timestep) * random
     return newvalue
 
-# This function performs a portfolio Monte Carlo simulation based on Geometric Brownian Motion. It differes from the
-# "portfolioMonteCarlo" function in that it accepts a timesteplist and plots it as well.
-# Timesteplist consists of a list starting with 0 of desired time intervals (in days) for which the MC simulation is
-# performed. This function allows the plotting of the time series data to illustrate the Monte Carlo simulation process.
 def portfolioMonteCarlo2(cleandata, timesteplist, weights, repetitions):
+    """ This function performs a portfolio Monte Carlo simulation based on Geometric Brownian Motion. It differes from
+    the "portfolioMonteCarlo" function in that it accepts a timesteplist and plots it as well. Timesteplist consists of
+    a list starting with 0 of desired time intervals (in days) for which the MC simulation is
+    performed. This function allows the plotting of the time series data to illustrate the Monte Carlo simulation
+    process. """
 
     muvector = np.mean(cleandata)
     cov = parametricVaR.varCovarMatrix(cleandata)
@@ -93,8 +94,8 @@ def portfolioMonteCarlo2(cleandata, timesteplist, weights, repetitions):
 
     return replist
 
-# Monte Carlo simulations for a single asset
 def singleMonteCarlo(cleandata, timesteplist, repetitions):
+    """Monte Carlo simulations for a single asset """
     mu = np.mean(cleandata)
     var = np.var(cleandata)
     # There is a new random vector for each timestep and for each each repetition
@@ -115,10 +116,9 @@ def singleMonteCarlo(cleandata, timesteplist, repetitions):
 
     return replist
 
-
-# This function performs a portfolio Monte Carlo simulation based on Geometric Brownian Motion.
-# This function does NOT allow the plotting of  the time series, and is only calculates VaR for the next day.
 def portfolioMonteCarlo(cleandata, weights, repetitions):
+    """This function performs a portfolio Monte Carlo simulation based on Geometric Brownian Motion.
+    This function does NOT allow the plotting of  the time series, and is only calculates VaR for the next day. """
 
     muvector = np.mean(cleandata)
     covar = parametricVaR.varCovarMatrix(cleandata)
@@ -164,9 +164,9 @@ def portfolioMonteCarlo(cleandata, weights, repetitions):
     return replist
 
 
-# This function generates and saves correlated random numbers. The input is a given CSV of financial data. The output is
-# a CSV file containing random numbers for each CSV. This is only for a single timestep.
 def randomCSV(inputFile, csvfilename, repetitions):
+    """This function generates and saves correlated random numbers. The input is a given CSV of financial data. The
+    output is aCSV file containing random numbers for each CSV. This is only for a single timestep. """
 
     # Read the inputFile, each list is a row of prices for different assets
     my_data = genfromtxt(inputFile, delimiter=',')
