@@ -2,18 +2,18 @@
 # and for multi asset portfolios.
 import numpy as np
 
-# Given a distribution of returns and a validity period T, this function calculates the historical VaR for a single
-# asset.
 def historicalSingleVaR(cleanasset, confidence):
+    """Given a distribution of returns and a validity period T, this function calculates the historical VaR for a
+    single asset. """
     negVaR = np.percentile(cleanasset, 100-confidence)  # returns the 100-confidence percentile
     if negVaR < 0:
         VaR = abs(negVaR)
     else: VaR = 0
     return VaR
 
-# Given a distribution of returns and a validity period T, this function calculates the historical CVaR for a single
-# asset. CVaR is 0 if VaR is positive.
 def historicalSingleCVaR(cleanasset, confidence):
+    """Given a distribution of returns and a validity period T, this function calculates the historical CVaR for
+    a single asset. CVaR is 0 if VaR is positive. """
     negVaR = np.percentile(cleanasset, 100-confidence)  # returns the 100-confidence percentile
     if negVaR < 0:
         sortedReturns = np.sort(cleanasset)
@@ -25,8 +25,8 @@ def historicalSingleCVaR(cleanasset, confidence):
     else: CVaR = 0
     return CVaR
 
-# Calculates historical VaR for a given portfolio assuming the windwowsize is the dataset length
 def historicalPortfolioVaR(cleandata, confidence, weights):
+    """Calculates historical VaR for a given portfolio assuming the windwowsize is the dataset length. """
     returnslist = []
     cleandata2 = np.asarray(cleandata)
     weight2 = np.asarray(weights)
@@ -39,8 +39,8 @@ def historicalPortfolioVaR(cleandata, confidence, weights):
     else: VaR = 0
     return VaR
 
-# Calculates historical CVaR for a given portfolio
 def historicalPortfolioCVaR(cleandata, confidence, weights):
+    """Calculates historical CVaR for a given portfolio. """
     returnslist = []
     cleandata2 = np.asarray(cleandata)
     weight2 = np.asarray(weights)
